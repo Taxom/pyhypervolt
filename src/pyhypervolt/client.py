@@ -5,10 +5,10 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
-from typing_extensions import Self
-
 from bleak import BleakClient, BleakScanner
 from bleak.backends.device import BLEDevice
+from typing_extensions import Self
+
 
 from .auth import calculate_auth_response
 from .constants import (
