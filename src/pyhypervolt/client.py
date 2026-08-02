@@ -130,7 +130,7 @@ class Hypervolt:
         """Disconnect without changing motor state."""
         await self._safe_disconnect()
 
-    async def __aenter__(self) -> Hypervolt:
+    async def __aenter__(self) -> Self:
         await self.connect()
         return self
 
