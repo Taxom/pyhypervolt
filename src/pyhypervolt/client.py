@@ -9,7 +9,6 @@ from bleak import BleakClient, BleakScanner
 from bleak.backends.device import BLEDevice
 from typing_extensions import Self
 
-
 from .auth import calculate_auth_response
 from .constants import (
     AUTH_UUID,
