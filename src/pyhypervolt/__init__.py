@@ -3,15 +3,15 @@ from __future__ import annotations
 from .models import ControlState, DeviceInfo, Telemetry
 
 __all__ = [
+    "ControlState",
+    "DeviceInfo",
     "Hypervolt",
     "Hypervolt2",
-    "HypervoltError",
-    "HypervoltNotFoundError",
     "HypervoltAuthenticationError",
     "HypervoltCommandNotConfirmedError",
-    "ControlState",
+    "HypervoltError",
+    "HypervoltNotFoundError",
     "Telemetry",
-    "DeviceInfo",
 ]
 
 __version__ = "1.0.0"

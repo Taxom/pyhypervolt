@@ -11,7 +11,7 @@ class ControlState:
     received_at: datetime
 
     @classmethod
-    def parse(cls, payload: bytes) -> "ControlState":
+    def parse(cls, payload: bytes) -> ControlState:
         if len(payload) != 2:
             raise ValueError(f"Expected 2-byte control status, got {len(payload)}")
         return cls(payload[0], payload[1], datetime.now(timezone.utc))
@@ -27,7 +27,7 @@ class Telemetry:
     received_at: datetime
 
     @classmethod
-    def parse(cls, payload: bytes) -> "Telemetry":
+    def parse(cls, payload: bytes) -> Telemetry:
         if len(payload) != 14:
             raise ValueError(f"Expected 14-byte telemetry packet, got {len(payload)}")
         return cls(

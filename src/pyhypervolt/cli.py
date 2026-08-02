@@ -4,7 +4,7 @@ import argparse
 import asyncio
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from bleak import BleakScanner
 
@@ -104,7 +104,7 @@ def _print_table_status(status: dict) -> None:
     raw = "?" if status["motor_load_raw"] is None else str(status["motor_load_raw"])
     flags = "?" if status["flags"] is None else f'0x{status["flags"]:02X}'
     print(
-        f"{datetime.now().strftime('%H:%M:%S')}  {speed:^5} {load:^4} "
+        f"{datetime.now(timezone.utc).astimezone().strftime('%H:%M:%S')}  {speed:^5} {load:^4} "
         f"{voltage:>7}  {temp:>4} {raw:>8} {flags:>5}",
         flush=True,
     )
@@ -157,7 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
     status.set_defaults(func=cmd_status)
 
     speed = sub.add_parser("speed", help="set speed 0-3")
-    speed.add_argument("level", type=int, choices=range(0, 4))
+    speed.add_argument("level", type=int, choices=range(4))
     speed.add_argument(
         "--hold",
         type=float,

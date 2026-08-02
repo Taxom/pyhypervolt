@@ -5,6 +5,8 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
+from typing_extensions import Self
+
 from bleak import BleakClient, BleakScanner
 from bleak.backends.device import BLEDevice
 
@@ -78,7 +80,7 @@ class Hypervolt:
         *,
         name: str = DEVICE_NAME,
         timeout: float = 15.0,
-    ) -> "Hypervolt":
+    ) -> Hypervolt:
         """Find a nearby Hypervolt by advertised name."""
         device = await BleakScanner.find_device_by_filter(
             lambda candidate, adv: name.lower()
@@ -128,7 +130,7 @@ class Hypervolt:
         """Disconnect without changing motor state."""
         await self._safe_disconnect()
 
-    async def __aenter__(self) -> "Hypervolt":
+    async def __aenter__(self) -> Hypervolt:
         await self.connect()
         return self
 
@@ -143,7 +145,7 @@ class Hypervolt:
         timeout: float = 1.5,
     ) -> ControlState | None:
         """Set speed 0-3 and optionally wait for a matching notification."""
-        if speed not in range(0, 4):
+        if speed not in range(4):
             raise ValueError("Hypervolt speed must be 0, 1, 2, or 3")
         client = self._require_client()
         previous_timestamp = self.control_state.received_at if self.control_state else None
@@ -239,7 +241,7 @@ class Hypervolt:
                 return bytes(await client.read_gatt_char(uuid)).decode(
                     "utf-8", errors="replace"
                 ).rstrip("\x00\n")
-            except Exception:
+            except Exception:  # noqa: BLE001 - optional device-info field
                 return None
 
         return DeviceInfo(
@@ -262,8 +264,8 @@ class Hypervolt:
             for uuid in (CONTROL_UUID, TELEMETRY_UUID):
                 try:
                     await client.stop_notify(uuid)
-                except Exception:
-                    pass
+                except Exception as exc:  # noqa: BLE001 - best-effort cleanup
+                    _LOGGER.debug("Could not stop notifications for %s: %s", uuid, exc)
             await client.disconnect()
 
     def _on_control(self, _sender, data: bytearray) -> None:
